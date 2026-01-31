@@ -1,211 +1,174 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Telegram WebApp</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-secondary-bg-color: #f0f2f5;
+            --tg-theme-text-color: #000000;
+            --tg-theme-button-color: #007aff;
+            --tg-theme-hint-color: #999999;
+        }
 
-  <!-- Telegram WebApp JS API -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css">
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background-color: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+            margin: 0;
+            padding: 16px;
+        }
 
-  <!-- Основной скрипт WebApp -->
-  <!-- <script defer src="script.js"></script> -->
+        /* Поле поиска */
+        .search-container {
+            margin-bottom: 20px;
+            background: var(--tg-theme-bg-color);
+            border-radius: 15px;
+            padding: 4px 12px;
+            display: flex;
+            align-items: center;
+            border: 2px solid #ddd; /* Четкая граница для удобства */
+        }
+
+        .search-input {
+            width: 100%;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            outline: none;
+            background: transparent;
+            color: var(--tg-theme-text-color);
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        /* Сетка категорий */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .category-card {
+            background: var(--tg-theme-bg-color);
+            border-radius: 20px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
+            transition: transform 0.1s;
+            cursor: pointer;
+        }
+
+        .category-card:active {
+            transform: scale(0.95);
+            border-color: var(--tg-theme-button-color);
+        }
+
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .category-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .footer-info {
+            margin-top: 30px;
+            text-align: center;
+            padding: 15px;
+            background: #e1f5fe;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #01579b;
+        }
+    </style>
 </head>
-
 <body>
-  <div class="price-and-cart">
-    <!-- Блок предпросмотра цены -->
-    <div id="pricePreview" class="price-pill" aria-live="polite"></div>
-      <!-- Значок Помощь -->
-    <button class="bt-help" type="button" aria-label="Помощь">❓</button>
+
+    <div class="search-container">
+        <span style="font-size: 20px;">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Поиск в справочнике...">
     </div>
 
-  <!-- Шаг 1 -->
-  <div class="step step-1">
-    <p><strong>Шаг 1/3: Выберите подписку</strong></p>
-    <div class="buttons">
-      <a href="#" class="btn option" data-plan="EU">Я в России (хочу youtube)</a>
-      <a href="#" class="btn option" data-plan="RU">Я за границей (хочу госуслуги)</a>
-      <!-- <a href="#" class="btn option" data-plan="Роутер">Настройка на роутере</a> -->
-      <!-- <a href="#" class="btn option" data-plan="Сервер VPS">Сервер персональный</a> -->
+    <div class="welcome-text">Выберите раздел:</div>
+
+    <div class="grid-container">
+        <div class="category-card" onclick="selectCategory('eda')">
+            <div class="icon">🍕</div>
+            <div class="category-title">Еда и продукты</div>
+        </div>
+
+        <div class="category-card" onclick="selectCategory('master')">
+            <div class="icon">🛠</div>
+            <div class="category-title">Услуги и мастера</div>
+        </div>
+
+        <div class="category-card" onclick="selectCategory('auto')">
+            <div class="icon">🚗</div>
+            <div class="category-title">Авто и запчасти</div>
+        </div>
+
+        <div class="category-card" onclick="selectCategory('market')">
+            <div class="icon">🛍</div>
+            <div class="category-title">Барахолка</div>
+        </div>
+
+        <div class="category-card" onclick="selectCategory('health')">
+            <div class="icon">💊</div>
+            <div class="category-title">Аптеки и врачи</div>
+        </div>
+
+        <div class="category-card" onclick="selectCategory('job')">
+            <div class="icon">💼</div>
+            <div class="category-title">Работа и вакансии</div>
+        </div>
     </div>
-  </div>
 
-  <!-- Шаг 2 -->
-  <div class="step step-2" style="display:none">
-    <p><strong>Шаг 2/3: Настройка аккаунтов и срока</strong></p>
-    <div class="buttons">
-      <span class="accounts-label" style="width: 100%; text-align: center; font-weight: bold;">Аккаунты</span>
-      <a href="#" class="btn option" data-accounts="1">1 аккаунт</a>
-      <a href="#" class="btn option" data-accounts="3">3 аккаунта</a>
-      <a href="#" class="btn option" data-plan="Роутер">Для роутера</a>
-  <!-- <a href="#" class="btn option" data-accounts="5">5 аккаунтов</a> -->
+    <div class="footer-info">
+        Не нашли нужного? Напишите запрос в поиске выше.
     </div>
-    <div class="buttons">
-      <span style="width: 100%; text-align: center; font-weight: bold;">Срок</span>
-      <a href="#" class="btn option" data-duration="1">1 месяц</a>
-      <a href="#" class="btn option" data-duration="3">3 месяца</a>
-      <a href="#" class="btn option" data-duration="6">6 месяцев</a>
-    </div>
-  </div>
 
-  <!-- Шаг 3 -->
-<div class="step step-3" style="display:none">
-  <p><strong>Шаг 3/3: Подтверждение</strong></p>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
 
-  <div class="confirm-box">
-    <div id="summary"></div>
+        // Главная кнопка Telegram (снизу)
+        tg.MainButton.setText("ПОДАТЬ ОБЪЯВЛЕНИЕ").show();
 
-    <!-- Шаг 3: Email (после summary) -->
-    <div class="field" id="email-field" style="margin-top:12px">
-      <label for="email" class="email-label" style="display:block; font-weight:600; margin-bottom:6px;">
-        Заполните (проверьте) ваш адрес эл.почты
-      </label>
-      <input id="email" class="email" type="email" inputmode="email" autocomplete="email"
-             placeholder="you@example.com" required>
-      <small id="email-error" style="display:none; color:#f3fc03; margin-top:6px;">Введите корректный email</small>
-    </div>
-  </div>
-</div>
+        // Обработка поиска при нажатии Enter
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const query = this.value;
+                tg.showAlert("Ищем: " + query);
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
 
-  <!-- Прогресс-бар -->
-  <div class="progress">
-    <div class="progress-bar" id="progress-bar" style="width: 33%"></div>
-  </div>
+        function selectCategory(id) {
+            tg.HapticFeedback.impactOccurred('medium');
+            tg.showAlert("Открываем раздел: " + id);
+        }
 
-  <!-- Кнопки управления -->
-  <div class="buttons nav-buttons">
-    <a href="#" class="btn" id="back">Назад</a>
-    <a href="#" class="btn full" id="next">Далее</a>
-  </div>
-
-  <!-- 🔧 Ручная матрица ИТОГОВЫХ цен -->
-  <script>
-    // Итоговые цены БЕЗ скидок/формул.
-    // EU/RU: matrixTotals[plan][accounts][duration] = TOTAL
-    // Роутер/Сервер VPS: matrixTotals[plan].durations[duration] = TOTAL
-    window.PRICING = {
-      currency: "₽",
-      display: { currencyPosition: "suffix", thousandSep: " ", decimalSep: ",", fractionDigits: 0 },
-      matrixTotals: {
-        "EU": {
-          "1": { "1": 120, "3": 330, "6": 650 },
-          "3": { "1": 330, "3": 950, "6": 1700 }
-        },
-        "RU": {
-          "1": { "1": 100, "3": 280, "6": 550 },
-          "3": { "1": 280, "3": 800, "6": 1500 }
-        },
-        "Роутер": { durations: { "1": 450, "3": 1200, "6": 1800 } },
-        // "Сервер VPS": { durations: { "1": 500, "3": 1400, "6": 2200 } }
-      }
-    };
-  </script>
-
-<!-- Help modal -->
-<div id="help-modal" class="modal" aria-hidden="true">
-  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-describedby="help-body">
-    <button class="modal__close" type="button" aria-label="Закрыть" data-close>&times;</button>
-
-    <h3 id="help-title" class="modal__title">&nbsp;&nbsp;&nbsp;?</h3>
-    <div class="accordion" id="help-accordion">
-  
-  <details class="acc-item" open>
-    <summary><span>Важная информация о сервисе</span></summary>
-    <div class="acc-body">
-      <ul>
-        <li>Не используйте сервис для криминальной деятельности, продажи запрещенных веществ или распространения порнографии. 
-          Вы оплачиваете сервис своей банковской картой, а это значит, что вы не являетесь анонимом. И если полиция будет расследовать уголовное дело,
-           в котором фигурирует ваш аккаунт, то ваше имя там всплывёт. Поэтому никогда не выкладывайте ваши учётные данные в открытый доступ и не передавайте посторонним пользователям,
-            иначе вам возможно придётся отвечать за чужие действия. И, разумеется, сервис не сделает вас анонимным, если вы заходите в социальные сети под учёткой с вашим настоящим именем.
-        </li>
-      </ul>
-    </div>
-  </details>
-  
-  <details class="acc-item">
-    <summary><span>Как оформить заказ</span></summary>
-    <div class="acc-body">
-      <ul>
-        <li>Выберите тариф на шаге 1.</li>
-        <li>На шаге 2 укажите параметры (для спец-тарифов — только срок)</li>
-        <li>На шаге 3 проверьте сумму, введите e-mail для отслеживания подписки и нажмите «Подтвердить»</li>
-        <li>1 аккаунт позволяет включать сервис на любом устройстве в текущий момент времени</li> 
-        <li>2 и более аккаунта позволяют работать одновременно на разных устройствах</li>
-      </ul>
-    </div>
-  </details>
-
-  <details class="acc-item">
-    <summary><span>Как оплатить заказ</span></summary>
-    <div class="acc-body">
-      <ul>
-        <li>Через СБП по номеру телефона +79957979609</li>
-        <li>По номеру банковской карты 5536090318609271</li>
-        <li>Совкомбанк Владимир А.</li>
-      </ul>
-    </div>
-  </details>
-
-  <details class="acc-item">
-    <summary><span>Тарифы</span></summary>
-    <div class="acc-body">
-      <div id="pricing-tables"></div>
-    </div>
-  </details>
-
-  <details class="acc-item">
-    <summary><span>Как установить и запустить</span></summary>
-    <div class="acc-body">
-      <ol>
-        <li>Скачайте и установите приложениe <b>Hiddify</b> под вашу операционную систему:
-          
-        <b>Android</b>:&nbsp
-                <a href=https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-Android-universal.apk>ссылка 1</a>&nbsp &nbsp
-                <a href=https://play.google.com/store/apps/details?id=app.hiddify.com&pcampaignid=web_share>Google Play ссылка 2</a><br>
-        
-        <b>Windows</b>:
-                <a href=https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-Windows-Setup-x64.Msix>ссылка</a><br>
-
-        <b>iOS</b>:
-                <a href=https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532?platform=iphone>ссылка 1</a><br>
-                <a href=https://apps.apple.com/it/app/v2raytun/id6476628951>Альтернатива - приложение V2RayTun ссылка 2</a><br>
-
-        <b>macOS</b>:
-                <a href=https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-MacOS.dmg>ссылка</a><br>
-
-        <b>Linux</b>:
-                <a href=https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-Linux-x64.AppImage>ссылка</a><br>               
-
-        <li>Скопируйте полученный ключ доступа.</li>
-        <li>Откройте приложение-клиент. Нажмите <b>+</b>, вставьте ключ и нажмите кнопку ВКЛ</li>
-      </ol>
-      <p>Теперь у вас есть доступ к свободному интернету. Чтобы убедиться, что вы подключились к серверу, проверьте работу заблокированных ресурсов</p>
-    </div>
-  </details>
-
-  <details class="acc-item">
-    <summary><span>Частые вопросы</span></summary>
-    <div class="acc-body">
-      <p><b>Можно ли изменить заказ?</b><br>Да, перезапустите мини-приложение и отправьте новую заявку</p>
-      <p><b>Не приходит сообщение в чат?</b><br>Проверьте подключение и e-mail, затем повторите подтверждение</p>
-      <p><b>Есть ли бесплатный тестовый период?</b><br>Да, для новых клиентов первые 2 недели для 1 аккаунта ознакомительные, без оплаты</p>
-    </div>
-  </details>
-
-  <!-- <details> -->
-    <summary><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Остались вопросы? Нажмите «❓» ещё раз или&nbsp;<a href="https://t.me/polpo2022" target="_blank" rel="noopener">напишите в чат</a></span></summary>
-  <!-- </details> -->
-</div>
-  
-</div>
-</div>
-
-<!-- ваш скрипт -->
-<script defer src="wizard.js"></script>
-
+        tg.MainButton.onClick(() => {
+            tg.showAlert("Здесь откроется форма подачи объявления");
+        });
+    </script>
 </body>
-
 </html>
